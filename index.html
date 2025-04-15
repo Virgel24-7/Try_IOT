@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Document</title>
+</head>
+<body>
+  <p id="currentval" style="font-size: xx-large;">Current Value: 0</p>
+  <p id="loading"> You may toggle the button. </p>
+  <button id="myButton">Toggle</button>
+
+  <script>
+    let value = 0;
+    const button = document.getElementById("myButton");
+    const display = document.getElementById("currentval");
+    const loadText = document.getElementById("loading");
+
+    button.onclick = function () {
+        button.disabled = true;
+
+        const newValue = value === 0 ? 1 : 0;
+        loadText.innerText = "Loading...";
+        fetch("https://api.thingspeak.com/update?api_key=FZSSR1AD193JVPPX&field1=" + newValue)
+        .then(response => {
+            if (!response.ok) {
+            throw new Error("Network response was not ok");
+            }
+            // Update the local value only after success
+            value = newValue;
+            display.innerText = "Current Value: " + value;
+        })
+        .catch(error => {
+            console.error("Fetch error:", error);
+            alert("Failed to update. Try again.");
+        })
+        .finally(() => {
+            setTimeout(() => {
+                button.disabled = false;
+                loadText.innerText = "You may toggle the button.";
+            }, 15000);
+        });
+    };
+  </script>
+</body>
+</html>
