@@ -21,7 +21,7 @@
 
         const newValue = value === 0 ? 1 : 0;
         loadText.innerText = "Loading...";
-        fetch("https://api.thingspeak.com/update?api_key=FZSSR1AD193JVPPX&field1=" + newValue + "&field2")
+        fetch("https://api.thingspeak.com/update?api_key=FZSSR1AD193JVPPX&field1=" + newValue)
         .then(response => {
             if (!response.ok) {
             throw new Error("Network response was not ok");
