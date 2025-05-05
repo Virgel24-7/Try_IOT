@@ -6,7 +6,7 @@
   <title>Document</title>
 </head>
 <body>
-  <p id="currentval" style="font-size: xx-large;">Current Value: 0</p>
+  <p id="currentval" style="font-size: xx-large;">Current Value: ...</p>
   <p id="loading"> You may toggle the button. </p>
   <button id="myButton">Toggle</button>
 
@@ -23,14 +23,14 @@
           const latestFeed = data.feeds[0];
           if (latestFeed && latestFeed.field1 !== null) {
             value = parseInt(latestFeed.field1);
-            document.getElementById("display").innerText = "Current value: " + value;
+            display.innerText = "Current value: " + value;
           } else {
-            document.getElementById("display").innerText = "No data found.";
+            display.innerText = "No data found.";
           }
         })
         .catch(error => {
           console.error("Fetch error:", error);
-          document.getElementById("display").innerText = "Error loading data.";
+          display.innerText = "Error loading data.";
         });
     };
     
