@@ -18,10 +18,18 @@
 
     button.onclick = function () {
         button.disabled = true;
-
+        let field2Value = 0;
         const newValue = value === 0 ? 1 : 0;
         loadText.innerText = "Loading...";
-        fetch("https://api.thingspeak.com/update?api_key=FZSSR1AD193JVPPX&field1=" + newValue)
+        fetch("https://api.thingspeak.com/channels/2920014/fields/2.json?api_key=X6IMS820SQ2E9N3E&results=1")
+        .then(response => response.json())
+        .then(data => {
+          const latestFeed = data.feeds[0];
+          field2Value = latestFeed.field2;
+        })
+        .catch(error => console.error("Error:", error));
+      
+        fetch("https://api.thingspeak.com/update?api_key=FZSSR1AD193JVPPX&field1=" + newValue + "&field2" + field2Value)
         .then(response => {
             if (!response.ok) {
             throw new Error("Network response was not ok");
