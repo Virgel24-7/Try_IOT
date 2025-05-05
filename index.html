@@ -16,6 +16,24 @@
     const display = document.getElementById("currentval");
     const loadText = document.getElementById("loading");
 
+    window.onload = function () {
+      fetch("https://api.thingspeak.com/channels/2920014/fields/1.json?api_key=X6IMS820SQ2E9N3E&results=1")
+        .then(response => response.json())
+        .then(data => {
+          const latestFeed = data.feeds[0];
+          if (latestFeed && latestFeed.field1 !== null) {
+            value = parseInt(latestFeed.field1);
+            document.getElementById("display").innerText = "Current value: " + value;
+          } else {
+            document.getElementById("display").innerText = "No data found.";
+          }
+        })
+        .catch(error => {
+          console.error("Fetch error:", error);
+          document.getElementById("display").innerText = "Error loading data.";
+        });
+    };
+    
     button.onclick = function () {
       button.disabled = true;
       const newValue = value === 0 ? 1 : 0;
