@@ -17,36 +17,34 @@
     const loadText = document.getElementById("loading");
 
     button.onclick = function () {
-        button.disabled = true;
-        let field2Value = 0;
-        const newValue = value === 0 ? 1 : 0;
-        loadText.innerText = "Loading...";
-        fetch("https://api.thingspeak.com/channels/2920014/fields/2.json?api_key=X6IMS820SQ2E9N3E&results=1")
+      button.disabled = true;
+      const newValue = value === 0 ? 1 : 0;
+      loadText.innerText = "Loading...";
+
+      fetch("https://api.thingspeak.com/channels/2920014/fields/2.json?api_key=X6IMS820SQ2E9N3E&results=1")
         .then(response => response.json())
         .then(data => {
           const latestFeed = data.feeds[0];
-          field2Value = latestFeed.field2;
+          const field2Value = latestFeed.field2 || "0"; // Fallback to "0" if null
+
+          // Now safely send the update with both field1 and preserved field2
+          return fetch(`https://api.thingspeak.com/update?api_key=FZSSR1AD193JVPPX&field1=${newValue}&field2=${field2Value}`);
         })
-        .catch(error => console.error("Error:", error));
-      
-        fetch("https://api.thingspeak.com/update?api_key=FZSSR1AD193JVPPX&field1=" + newValue + "&field2" + field2Value)
         .then(response => {
-            if (!response.ok) {
-            throw new Error("Network response was not ok");
-            }
-            // Update the local value only after success
-            value = newValue;
-            display.innerText = "Current Value: " + value;
+          if (!response.ok) throw new Error("Network response was not ok");
+
+          value = newValue;
+          display.innerText = "Current Value: " + value;
         })
         .catch(error => {
-            console.error("Fetch error:", error);
-            alert("Failed to update. Try again.");
+          console.error("Error:", error);
+          alert("Failed to update. Try again.");
         })
         .finally(() => {
-            setTimeout(() => {
-                button.disabled = false;
-                loadText.innerText = "You may toggle the button.";
-            }, 15000);
+          setTimeout(() => {
+            button.disabled = false;
+            loadText.innerText = "You may toggle the button.";
+          }, 15000); // ThingSpeak limit is 15s per update
         });
     };
   </script>
